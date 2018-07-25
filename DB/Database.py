@@ -103,39 +103,6 @@ def cadastro():
 #       GESTOR DE CONSULTA
 #--------------------------------------
 def consulta():
-    sql_consulta = 'SELECT * FROM Clientes WHERE name = ?'
-    c.execute(sql_consulta, ('cabrito',))
-    result_consulta = c.fetchone()
-    user = auth[0]
-    cargo = auth[2]
-    root = Tk()
-    root.title('S4U® CONSULTA')
-    consult = LabelFrame(root, text='Consulta')
-    Label(consult, text='Data: ').grid(row=0, column=0, sticky=W)
-    Label(consult, text='Funcionario: ').grid(row=1, column=0, sticky=W)
-    Label(consult, text='Nome: ').grid(row=2, column=0, sticky=W)
-    Label(consult, text='CPF: ').grid(row=3, column=0, sticky=W)
-    Label(consult, text='Telefone: ').grid(row=4, column=0, sticky=W)
-    Label(consult, text='E-Mail: ').grid(row=5, column=0, sticky=W)
-
-
-#--------------------------------------
-#       EXIBIR INFORMAÇÕES
-#--------------------------------------
-    lb_tempo = Label(consult, text='{}'.format(result_consulta[0]))
-    lb_user = Label(consult, text='{} {}'.format(result_consulta[1].title(), result_consulta[2].title()))
-    lb_name = Label(consult, text='{}'.format(result_consulta[3]))
-    lb_cpf = Label(consult, text='{}'.format(result_consulta[4]))
-    lb_tel = Label(consult, text='{}'.format(result_consulta[5]))
-    lb_email = Label(consult, text='{}'.format(result_consulta[6]))
-
-    lb_tempo.grid(row=0, column=1, sticky=W)
-    lb_user.grid(row=1, column=1, sticky=W)
-    lb_name.grid(row=2, column=1, sticky=W)
-    lb_cpf.grid(row=3, column=1, sticky=W)
-    lb_tel.grid(row=4, column=1, sticky=W)
-    lb_email.grid(row=5, column=1, sticky=W)
-    consult.grid(row=0, columnspan=4, sticky=W+E)
 
 
 #--------------------------------------
@@ -150,6 +117,50 @@ def consulta():
             treeview.insert('', 0, text=sql_cliente[3], values=(sql_cliente[5], sql_cliente[6]))
 
 
+    def busca(event):
+        for item in treeview.selection():
+            item_text = treeview.item(item, "text")
+        sql_busca = 'SELECT * FROM Clientes WHERE name = ?'
+        
+        for sql_consulta in c.execute(sql_busca, (item_text,)):
+            lb_tempo['text'] = sql_consulta[0]
+            lb_user['text'] = (sql_consulta[1].title(), sql_consulta[2].title())
+            lb_name['text'] = sql_consulta[3].title()
+            lb_cpf['text'] = sql_consulta[4]
+            lb_tel['text'] = sql_consulta[5]
+            lb_email['text'] = sql_consulta[6].title()
+
+
+    root = Tk()
+    root.title('S4U® CONSULTA')
+    consult = LabelFrame(root, text='Consulta')
+    Label(consult, text='Data: ').grid(row=0, column=0, sticky=E)
+    Label(consult, text='Funcionario: ').grid(row=1, column=0, sticky=E)
+    Label(consult, text='Nome: ').grid(row=2, column=0, sticky=E)
+    Label(consult, text='CPF: ').grid(row=3, column=0, sticky=E)
+    Label(consult, text='Telefone: ').grid(row=4, column=0, sticky=E)
+    Label(consult, text='E-Mail: ').grid(row=5, column=0, sticky=E)
+
+
+#--------------------------------------
+#       EXIBIR INFORMAÇÕES
+#--------------------------------------
+    lb_tempo = Label(consult, text='')
+    lb_user = Label(consult, text='')
+    lb_name = Label(consult, text='')
+    lb_cpf = Label(consult, text='')
+    lb_tel = Label(consult, text='')
+    lb_email = Label(consult, text='')
+
+    lb_tempo.grid(row=0, column=1, sticky=W)
+    lb_user.grid(row=1, column=1, sticky=W)
+    lb_name.grid(row=2, column=1, sticky=W)
+    lb_cpf.grid(row=3, column=1, sticky=W)
+    lb_tel.grid(row=4, column=1, sticky=W)
+    lb_email.grid(row=5, column=1, sticky=W)
+    consult.grid(row=0, columnspan=4, sticky=W+E)
+
+
 #--------------------------------------
 #       INTERFACE GRAFICA DE BUSCA
 #--------------------------------------
@@ -161,25 +172,10 @@ def consulta():
     treeview.heading('#0', text='Nome')
     treeview.heading('#1', text='Telefone')
     treeview.heading('#2', text='E-Mail')
+    treeview.bind("<<TreeviewSelect>>", busca)
     et_busca.grid(row=1, column=1, sticky=W+E)
     treeview.grid(row=2, columnspan=4, sticky=W+E)
 
 
     refresh()
     root.mainloop()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
