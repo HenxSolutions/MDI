@@ -34,6 +34,7 @@ def menu(user):
     cad = LabelFrame(root, text='Cadastro')
     cad.grid(row=1,columnspan=2, sticky=W+E)
     Button(cad, text='CADASTRAR', command=Database.cadastro).grid(row=0, column=0, sticky=W+E)
+    Button(cad, text='CONSULTAR', command=Database.consulta).grid(row=1, column=0, sticky=W+E)
 
 
 #--------------------------------------
